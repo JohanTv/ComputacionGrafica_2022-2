@@ -13,5 +13,6 @@ public:
     vector<Luz*> luces;
     Camara camara;
 
+    void Escenario0();
     void Escenario1();
 };

@@ -37,5 +37,5 @@ public:
     }
     
     void renderizar();
-    void renderizar(vector<Objeto*> &objetos, vector<Luz*> &luces);
+    void renderizar(vector<Objeto*> &objetos, vector<Luz*> &luces, bool reflection = false);
 };
