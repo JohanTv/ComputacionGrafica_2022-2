@@ -2,7 +2,7 @@
 
 #define _INFINITY (std::numeric_limits<float>::max())
 
-vec3 Camara::get_diffuse_reflection(vec3& N, vec3& L, vec3& color, vec3& kd){
+vec3 Camara::get_diffuse_reflection(vec3& N, vec3& L, vec3& color, float& kd){
     vec3 diffuse(0, 0, 0);
     float factor_difuso = N.punto(L);
     if(factor_difuso > 0){
@@ -11,7 +11,7 @@ vec3 Camara::get_diffuse_reflection(vec3& N, vec3& L, vec3& color, vec3& kd){
     return diffuse;
 }
 
-vec3 Camara::get_specular_reflection(vec3& N, vec3& L, vec3& dir, vec3& color, vec3& ks, int n){
+vec3 Camara::get_specular_reflection(vec3& N, vec3& L, vec3& dir, vec3& color, float& ks, int n){
     vec3 specular(0, 0, 0);
     vec3 r = 2*L.punto(N)*N-L;
     vec3 v = vec3{0,0,0} - dir;
@@ -19,7 +19,7 @@ vec3 Camara::get_specular_reflection(vec3& N, vec3& L, vec3& dir, vec3& color, v
     v.normalize();
     float factor_especular = r.punto(v);
     if(factor_especular > 0){
-        specular = pow(factor_especular, 4) * color * ks;
+        specular = pow(factor_especular, n) * color * ks;
     }
     return specular;
 }
@@ -38,7 +38,7 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objetos, vector<Luz*> &
     Luz luz = *(luces[0]);
     vec3 color(1, 1, 1);
     vec3 normal, N, L, pi;
-    float t_tmp, fs = 1;
+    float t_tmp;
     float mindist = _INFINITY;
     Objeto* closest_object = nullptr;
 
@@ -72,7 +72,7 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objetos, vector<Luz*> &
     vec3 specular = get_specular_reflection(N, L, rayo.dir, luz.color, closest_object->ks, closest_object->n);
     vec3 color_reflexivo(0, 0, 0);
 
-    if(depth != -1 && closest_object->ks > vec3(0, 0, 0)){
+    if(depth != -1 && closest_object->ks > 0){
         vec3 v = vec3{0,0,0} - rayo.dir;
         v.normalize();
 
