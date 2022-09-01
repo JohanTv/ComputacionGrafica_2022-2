@@ -49,7 +49,7 @@ build/
 # *.ipr
 
 # CMake
-cmake-build-*/
+RayTracing/cmake-build-debug/
 
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
