@@ -14,7 +14,7 @@ vec3 Camara::get_diffuse_reflection(vec3& N, vec3& L, vec3& color, float& kd){
 vec3 Camara::get_specular_reflection(vec3& N, vec3& L, vec3& dir, vec3& color, float& ks, int n){
     vec3 specular(0, 0, 0);
     vec3 r = 2*L.punto(N)*N-L;
-    vec3 v = vec3{0,0,0} - dir;
+    vec3 v = -dir;
     r.normalize();
     v.normalize();
     float factor_especular = r.punto(v);
@@ -31,74 +31,93 @@ void Camara::fill_pixel(int x, int y, vec3 color){
     (*pImg)(x,h-1-y,2) = (BYTE)(color.z * 255);
 }
 
-vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objetos, vector<Luz*> &luces, int depth){
+vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &luces, int depth){
     if (depth > 7)
-        return vec3(1,1,1);
+        return vec3(1, 1, 1);
 
     Luz luz = *(luces[0]);
-    vec3 color(1, 1, 1);
-    vec3 normal, N, L, pi;
-    float t_tmp;
-    float mindist = _INFINITY;
+    vec3 color, normal, N;
+    float t_tmp, mindist = _INFINITY;
     Objeto* closest_object = nullptr;
 
-    for(auto& objeto : objetos) {
-        if (objeto->interseccion(rayo, t_tmp, normal)) {
+    for(auto& object : objects) {
+        if (object->interseccion(rayo, t_tmp, normal)) {
             if(t_tmp < mindist){
                 mindist = t_tmp;
-                pi = rayo.ori + t_tmp * rayo.dir;
                 N = normal;
-                L = luz.pos - pi;
-                closest_object = objeto;
+                closest_object = object;
             }
         }
     }
 
     if(!closest_object)
-        return color;
+        return this->backgroud_color;
 
+    vec3 pi = rayo.ori + mindist * rayo.dir;
+    vec3 L = luz.pos - pi;
     L.normalize();
     Rayo rayo_sombra(pi + N * 0.01, L);
-    //vec3 ambiente = vec3(0.1,0.1,0.1) * closest_object->kd;
-
-    for(auto& esfera : objetos){
-        if (esfera->interseccion(rayo_sombra, t_tmp, normal)){
-            //color = closest_object->color * ambiente;
-            return vec3(0, 0, 0);
+    vec3 ambiente = vec3(0.1, 0.1, 0.1) * closest_object->kd;
+    vec3 bias = 0.001 * N;
+    vec3 diffuse, specular, color_reflexivo, color_refractivo;
+    
+    bool shadow = false;
+    for(auto& object : objects){
+        if (object->interseccion(rayo_sombra, t_tmp, normal)){
+            shadow = true;
+            break;
         }
     }
 
-    vec3 diffuse = get_diffuse_reflection(N, L, luz.color, closest_object->kd);
-    vec3 specular = get_specular_reflection(N, L, rayo.dir, luz.color, closest_object->ks, closest_object->n);
-    vec3 color_reflexivo(0, 0, 0);
+    if(shadow) goto jumpto;
 
-    if(depth != -1 && closest_object->ks > 0){
-        vec3 v = vec3{0,0,0} - rayo.dir;
-        v.normalize();
+    diffuse = get_diffuse_reflection(N, L, luz.color, closest_object->kd);
+    specular = get_specular_reflection(N, L, rayo.dir, luz.color, closest_object->ks, closest_object->n);
 
-        Rayo rayo_reflexivo;
-        rayo_reflexivo.ori = pi + N * 0.01;
-        rayo_reflexivo.dir = 2 * (v.punto(N)) * N - v;
-        color_reflexivo = calculate_color(rayo_reflexivo, objetos, luces, depth + 1);
+jumpto:;
+    float kr = closest_object->ks;
+    float kt = 0;
+    bool outside = rayo.dir.punto(N) < 0;
+    vec3 v = -rayo.dir;
+
+    if(closest_object->idr > 0) {
+        fresnel(rayo.dir, N, closest_object->idr, kr);
+        if (kr < 1) {
+            kt = 1 - kr;
+            Rayo rayo_refractivo;
+            rayo_refractivo.ori = outside ? pi - bias : pi + bias;
+            rayo_refractivo.dir = refract(rayo.dir, N, closest_object->idr);
+            rayo_refractivo.dir.normalize();
+            color_refractivo = calculate_color(rayo_refractivo, objects, luces, depth + 1);
+        }
     }
 
-    // color = closest_object->color * (ambiente + diffuse + specular + color_reflexivo);
-    color = closest_object->color * (diffuse + specular + color_reflexivo);
+    if (kr > 0) {
+        Rayo rayo_reflexivo;
+        rayo_reflexivo.ori = outside ? pi - bias : pi + bias;
+        rayo_reflexivo.dir = 2 * (v.punto(N)) * N - v;
+        rayo_reflexivo.dir.normalize();
+        color_reflexivo = calculate_color(rayo_reflexivo, objects, luces, depth + 1);
+    }
+    
+    color = closest_object->color * (ambiente + diffuse + specular);
+    color = color + color_reflexivo * kr + color_refractivo * kt;
     color.max_to_one();
+
     return color;
 }
 
-void Camara::renderizar(vector<Objeto*> &objetos, vector<Luz*> &luces, bool reflection) {
-    pImg = new CImg<BYTE>(w, h, 1, 10);
+void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces, bool reflection) {
+    pImg = new CImg<BYTE>(w, h, 1, 3);
     CImgDisplay dis_img((*pImg), "Imagen RayCasting en Perspectiva ");
 
-    Rayo rayo;
-    rayo.ori = eye;
+    Rayo rayo(eye);
 
     for (int x=0; x < w; x++){
         for (int y=0; y < h; y++){
             rayo.dir = -f*ze + a*(y/h -0.5)*ye + b*(x/w-0.5)*xe;
-            vec3 color = calculate_color(rayo, objetos, luces, reflection ? 1 : -1);
+            rayo.dir.normalize();
+            vec3 color = calculate_color(rayo, objects, luces, reflection ? 1 : -1);
             fill_pixel(x, y, color);    
         }
 
@@ -107,6 +126,40 @@ void Camara::renderizar(vector<Objeto*> &objetos, vector<Luz*> &luces, bool refl
     }
 
     while (!dis_img.is_closed()) {
+        // auto posx = dis_img.mouse_x();
+        // auto posy = dis_img.mouse_y();
+        // cout << posx << "-" << posy << endl;
         dis_img.wait();
     }
+}
+
+vec3 Camara::refract(vec3 I, vec3 N, float ior){
+    float cosi = clamp(-1, 1, I.punto(N));
+    float etai = 1, etat = ior;
+    vec3 n = N;
+    if (cosi < 0) { cosi = -cosi; } else { std::swap(etai, etat); n= -N; }
+    float eta = etai / etat;
+    float k = 1 - eta * eta * (1 - cosi * cosi);
+    return k < 0 ? vec3(0,0,0) : eta * I + (eta * cosi - sqrtf(k)) * n;
+}
+
+void Camara::fresnel(vec3 I, vec3 N, float &ior, float &kr){
+    float cosi = clamp(-1, 1, I.punto(N));
+    float etai = 1, etat = ior;
+    if (cosi > 0) { std::swap(etai, etat); }
+    // Compute sini using Snell's law
+    float sint = etai / etat * sqrtf(std::max(0.f, 1 - cosi * cosi));
+    // Total internal reflection
+    if (sint >= 1) {
+        kr = 1;
+    }
+    else {
+        float cost = sqrtf(std::max(0.f, 1 - sint * sint));
+        cosi = fabsf(cosi);
+        float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost));
+        float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
+        kr = (Rs * Rs + Rp * Rp) / 2;
+    }
+    // As a consequence of the conservation of energy, transmittance is given by:
+    // kt = 1 - kr;
 }

@@ -18,17 +18,23 @@ private:
     vec3 get_specular_reflection(vec3& N, vec3& L, vec3& pi, vec3& color, float& ks, int n = 4);
     void fill_pixel(int x, int y, vec3 color);
     vec3 calculate_color(Rayo rayo, vector<Objeto*>& objetos, vector<Luz*>& luces, int depth = -1);
-    void fresnel(vec3 I, vec3 N, float ior, float &kr );
+    void fresnel(vec3 I, vec3 N, float& ior, float &kr );
     vec3 refract(vec3 I, vec3 N, float ior);
-    float clamp(float n, float lower, float upper) {
+    float clamp(float lower, float upper, float n) {
         return max(lower, min(n, upper));
     }
+
 public:
     float fov, w, h, _near;
     vec3 eye, center, up;
     float f, a, b;
     vec3 xe, ye, ze;
     CImg<BYTE> *pImg;
+    vec3 backgroud_color;
+
+    Camara(){}
+    Camara(vec3 _center, vec3 _up, vec3 _eye, float _near_, float _fov, float _w, float _h)
+        : fov(_fov), w(_w), h(_h), _near(_near_), eye(_eye), center(_center), up(_up){}
 
     void inicializar() {
         f = _near;
@@ -42,5 +48,5 @@ public:
     }
     
     void renderizar();
-    void renderizar(vector<Objeto*> &objetos, vector<Luz*> &luces, bool reflection = false);
+    void renderizar(vector<Objeto*> &objetos, vector<Luz*> &luces, bool reflection = true);
 };

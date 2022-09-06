@@ -4,7 +4,10 @@
 
 int main() {
     Mundo mundo;
-    mundo.Escenario0();
-    mundo.Escenario1();
+    // mundo.Escenario0();
+    // mundo.Escenario1();
+    // mundo.Escenario2();
+    // mundo.Escenario3();
+    mundo.Escenario4();
     return 0;
 }

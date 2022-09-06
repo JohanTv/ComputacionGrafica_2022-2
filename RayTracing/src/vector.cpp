@@ -1,7 +1,3 @@
-//
-// Created by hgallegos on 17/08/2022.
-//
-
 #include "vector.h"
 
 vec3 operator/(float f, vec3 v) {
@@ -14,10 +10,7 @@ vec3 operator/(float f, vec3 v) {
 
     return vec3(tx, ty, tz);
 }
-vec3 operator*(float f, vec3 v) {
-    return vec3(f*v.x, f*v.y, f*v.z);
-}
 
-vec3 operator*(vec3 v, float f) {
-    return vec3(f*v.x, f*v.y, f*v.z);
+vec3 operator*(float f, vec3 v) {
+    return v * f;
 }

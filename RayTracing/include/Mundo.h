@@ -15,4 +15,9 @@ public:
 
     void Escenario0();
     void Escenario1();
+    void Escenario2();
+    void Escenario3();
+    void Escenario4();
+
+    void reset();
 };
