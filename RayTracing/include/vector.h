@@ -1,9 +1,11 @@
 #pragma once
 
 #include <cmath>
-#include <stdlib.h>
-#include <time.h>
 #include <algorithm>
+
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
 
 class vec3 {
 public:
@@ -17,6 +19,8 @@ public:
     vec3 operator-() { return vec3(-x, -y, -z); }
     vec3 operator*(vec3 v) { return vec3(x * v.x, y * v.y, z * v.z); }
     vec3 operator*(float f) { return vec3(x * f, y * f, z * f); }
+    vec3 operator/(vec3 v) { return vec3( x/v.x, y/v.y, z/v.z); }
+    vec3 operator/(float f) { return vec3( x/f, y/f, z/f); }
     bool operator>(vec3 v) { return x > v.x && y > v.y && z > v.z; }
     
     vec3 cruz(vec3 v) {
@@ -53,3 +57,7 @@ public:
 
 vec3 operator/(float f, vec3 v);
 vec3 operator*(float f, vec3 v);
+
+vec3 abs(vec3 &v);
+vec3 sign(vec3 &v);
+vec3 step(vec3 v1, vec3 v2);

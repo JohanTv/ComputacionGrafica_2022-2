@@ -55,17 +55,20 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
 
     vec3 pi = rayo.ori + mindist * rayo.dir;
     vec3 L = luz.pos - pi;
+    float dist_to_light = L.get_magnitude();
     L.normalize();
     Rayo rayo_sombra(pi + N * 0.01, L);
     vec3 ambiente = vec3(0.1, 0.1, 0.1) * closest_object->kd;
     vec3 bias = 0.001 * N;
     vec3 diffuse, specular, color_reflexivo, color_refractivo;
-    
+
     bool shadow = false;
     for(auto& object : objects){
-        if (object->interseccion(rayo_sombra, t_tmp, normal)){
-            shadow = true;
-            break;
+         if (object->interseccion(rayo_sombra, t_tmp, normal)){
+            if(t_tmp <= dist_to_light) {
+                shadow = true;
+                break;
+            }
         }
     }
 

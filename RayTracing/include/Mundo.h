@@ -18,6 +18,10 @@ public:
     void Escenario2();
     void Escenario3();
     void Escenario4();
+    void Escenario5();
+    void Escenario6();
+
+    void Proyecto1();
 
     void reset();
 };
