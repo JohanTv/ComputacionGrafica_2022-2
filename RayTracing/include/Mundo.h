@@ -12,7 +12,7 @@ public:
     vector<Objeto*> objetos;
     vector<Luz*> luces;
     Camara camara;
-
+    void solidifyLights();
     void Escenario0();
     void Escenario1();
     void Escenario2();

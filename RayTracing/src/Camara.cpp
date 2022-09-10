@@ -33,7 +33,7 @@ void Camara::fill_pixel(int x, int y, vec3 color){
 
 vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &luces, int depth){
     if (depth > 7)
-        return vec3(1, 1, 1);
+        return vec3(0, 0, 0);
 
     Luz luz = *(luces[0]);
     vec3 color, normal, N;
@@ -53,8 +53,13 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
     if(!closest_object)
         return this->backgroud_color;
 
+    if(closest_object->ks == -1){
+        return closest_object->color;
+    }
+    //////////////////////////////////////////
+    
     vec3 pi = rayo.ori + mindist * rayo.dir;
-    vec3 L = luz.pos - pi;
+    vec3 L = luz.cen - pi;
     float dist_to_light = L.get_magnitude();
     L.normalize();
     Rayo rayo_sombra(pi + N * 0.01, L);
@@ -65,7 +70,7 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
     bool shadow = false;
     for(auto& object : objects){
          if (object->interseccion(rayo_sombra, t_tmp, normal)){
-            if(t_tmp <= dist_to_light) {
+            if(object->ks != -1 && t_tmp <= dist_to_light) {
                 shadow = true;
                 break;
             }
@@ -102,7 +107,6 @@ jumpto:;
         rayo_reflexivo.dir.normalize();
         color_reflexivo = calculate_color(rayo_reflexivo, objects, luces, depth + 1);
     }
-    
     color = closest_object->color * (ambiente + diffuse + specular);
     color = color + color_reflexivo * kr + color_refractivo * kt;
     color.max_to_one();

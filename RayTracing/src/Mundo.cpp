@@ -13,6 +13,14 @@ void Mundo::reset(){
     luces.clear();
 }
 
+void Mundo::solidifyLights(){
+    for (auto it: luces){
+        if(it->visible){
+            objetos.emplace_back(it);
+        }
+    }
+}
+
 void Mundo::Escenario0(){
     camara.center=vec3(0,0,0);
     camara.up=vec3(0,1,0);
@@ -24,7 +32,9 @@ void Mundo::Escenario0(){
     camara.backgroud_color = vec3(1, 1, 1);
     camara.inicializar();
 
-    luces = { new Luz({10,30,20}, {1,1,1}) };
+    luces = { new Luz({10,30,20}, {1,1,1}, true) };
+    solidifyLights();
+
     const long SPHERENUM = 10;
     vec3 center, color;
     float radio;
@@ -49,9 +59,10 @@ void Mundo::Escenario0(){
 
 void Mundo::Escenario1(){
     camara = Camara(vec3(0,0,0), vec3(0,1,0), vec3(3, 5, 30), 4, 60, 600, 400);
+    camara.backgroud_color = vec3{0,0,0};
     camara.inicializar();
 
-    Luz *pLuz = new Luz(vec3(10, 30, 20), vec3(1,1,1));
+    Luz *pLuz = new Luz({10,30,20}, {1,1,1}, true);
     luces.emplace_back(pLuz);
 
     Esfera *pEsf = new Esfera(vec3(3,3,0), 4);
@@ -83,7 +94,7 @@ void Mundo::Escenario2(){
     camara = Camara(vec3(0,0,0), vec3(0,1,0), vec3(3,15,0), 4, 60, 800, 600);
     camara.inicializar();
 
-    Luz *pLuz = new Luz(vec3(10, 30, 20), vec3(1,1,1));
+    Luz *pLuz = new Luz({10,30,20}, {1,1,1}, true);
     luces.emplace_back(pLuz);
 
     Esfera *pEsf = new Esfera(vec3(3,3,0), 5);
@@ -115,7 +126,7 @@ void Mundo::Escenario3(){
     camara = Camara(vec3(0,0,0), vec3(0,1,0), vec3(3,15,30), 4, 60, 800, 600);
     camara.inicializar();
 
-    Luz *pLuz = new Luz(vec3(10, 30, 20), vec3(1,1,1));
+    Luz *pLuz = new Luz({10,30,20}, {1,1,1}, true);
     luces.emplace_back(pLuz);
 
     Esfera *pEsf = new Esfera(vec3(3,3,0), 5);
@@ -147,7 +158,7 @@ void Mundo::Escenario4(){
     camara = Camara(vec3(0,0,0), vec3(0,1,0), vec3(3,15,30), 4, 60, 800, 600);
     camara.inicializar();
 
-    Luz *pLuz = new Luz(vec3(10, 30, 20), vec3(1,1,1));
+    Luz *pLuz = new Luz({10,30,20}, {1,1,1}, true);
     luces.emplace_back(pLuz);
 
     Esfera *pEsf = new Esfera(vec3(3,10,0), 5);
@@ -176,11 +187,12 @@ void Mundo::Escenario4(){
 }
 
 void Mundo::Escenario5(){
-    camara = Camara(vec3(0,0,0), vec3(0,1,0), vec3(3,15,40), 4, 60, 800, 600);
+    camara = Camara(vec3(0,0,0), vec3(0,1,0), vec3(10,30,80), 4, 60, 800, 600);
     camara.inicializar();
 
-    Luz *pLuz = new Luz(vec3(10, 30, 20), vec3(1,1,1));
+    Luz *pLuz = new Luz({4,5,5}, {1,1,1}, true);
     luces.emplace_back(pLuz);
+    solidifyLights();
 
     Esfera *pEsf = new Esfera(vec3(3,3,0), 3);
     pEsf->set(vec3(0.1,1,0.1), 0.9, 0.5, 8, 1.5);
@@ -192,7 +204,7 @@ void Mundo::Escenario5(){
     pEsf3->set(vec3(1,1,0.1), 0.9);
 
     Plano *pPlano = new Plano(vec3(0,1,0),2);
-    pPlano->set(vec3(0.1,0.1,1), 0.7);
+    pPlano->set(vec3(0.1,0.1,1), 0.1);
 
     Plano *pPlano2 = new Plano(vec3(1,0,0),20);
     pPlano2->set(vec3(0,1,0), 0.7);
@@ -215,7 +227,7 @@ void Mundo::Escenario6(){ // STEPHANO
     camara = Camara(vec3(0,0,0), vec3(0,1,0), vec3(3,15,30), 4, 60, 800, 600);
     camara.inicializar();
 
-    Luz *pLuz = new Luz({10,30,20}, {1,1,1});
+    Luz *pLuz = new Luz({10,30,20}, {1,1,1}, true);
     luces.emplace_back(pLuz);
     Cilindro *pCil1 = new Cilindro(vec3(1,4,1), vec3(2,4,1), 4);
     pCil1->set(vec3(0,1,0), 0.7, 0, 0, 0);
