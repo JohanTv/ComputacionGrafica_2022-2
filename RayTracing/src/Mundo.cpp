@@ -250,7 +250,7 @@ void Mundo::Escenario7(){
 }
 
 void Mundo::Proyecto1(){
-        camara = Camara(vec3(0, 0, 0), vec3(0,1,0), vec3(3,20,50), 4, 60, 800, 600);
+        camara = Camara(vec3(0, 0, 0), vec3(0,1,0), vec3(3,30,50), 4, 60, 800, 600);
         camara.inicializar();
 
         Luz *pLuz = new Luz(vec3(30, 5, 20), vec3(1, 1, 1), true, 2);
