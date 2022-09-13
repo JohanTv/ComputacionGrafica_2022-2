@@ -2,6 +2,7 @@
 
 void Mundo::reset(){
     for(int i = 0; i < objetos.size(); i++){
+        if(objetos[i]->is_light()) continue;
         delete objetos[i];
     }
 
@@ -237,7 +238,6 @@ void Mundo::Escenario7(){
     Cilindro *pCil1 = new Cilindro(vec3(1,2,10), vec3(1,10,10), 6);
     pCil1->set(vec3(0.1,1,1), 0, 0.9, 8, 1.5);
 
-//     objetos.emplace_back( pEsfLuz );
     objetos.emplace_back( pEsf );
     objetos.emplace_back( pEsf2 );
     objetos.emplace_back( pEsf3 );
@@ -246,6 +246,7 @@ void Mundo::Escenario7(){
     objetos.emplace_back(pCil1);
 
     camara.renderizar(objetos, luces);
+    reset();
 }
 
 void Mundo::Proyecto1(){

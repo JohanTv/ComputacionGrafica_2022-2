@@ -51,7 +51,7 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
     }
 
     if(!closest_object)
-        return vec3(0, 0, 0);
+        return this->backgroud_color;
 
     if(closest_object->is_light())
         return closest_object->color;
