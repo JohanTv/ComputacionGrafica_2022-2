@@ -116,28 +116,34 @@ jumpto:;
 }
 
 void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces) {
-    pImg = new CImg<BYTE>(w, h, 1, 3);
-    CImgDisplay dis_img((*pImg), "Imagen RayCasting en Perspectiva ");
+    float x, y, z = 0;
+    while(true) {
+        pImg = new CImg<BYTE>(w, h, 1, 3);
+        CImgDisplay dis_img((*pImg), "Imagen RayCasting en Perspectiva ");
+        Rayo rayo(eye);
 
-    Rayo rayo(eye);
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                rayo.dir = -f * ze + a * (y / h - 0.5) * ye + b * (x / w - 0.5) * xe;
+                rayo.dir.normalize();
+                vec3 color = calculate_color(rayo, objects, luces, 1);
+                fill_pixel(x, y, color);
+            }
 
-    for (int x=0; x < w; x++){
-        for (int y=0; y < h; y++){
-            rayo.dir = -f*ze + a*(y/h -0.5)*ye + b*(x/w-0.5)*xe;
-            rayo.dir.normalize();
-            vec3 color = calculate_color(rayo, objects, luces, 1);
-            fill_pixel(x, y, color);    
+            dis_img.render((*pImg));
+            dis_img.paint();
         }
 
-        dis_img.render((*pImg));
-        dis_img.paint();
-    }
-
-    while (!dis_img.is_closed()) {
-        // auto posx = dis_img.mouse_x();
-        // auto posy = dis_img.mouse_y();
-        // cout << posx << "-" << posy << endl;
-        dis_img.wait();
+        if (!dis_img.is_closed()) {
+            std::cout << "Add new x, y, and z";
+            std::cin >> x >> y >> z;
+            if(dis_img.is_closed()) break;
+            dis_img.close();
+            eye = vec3(x, y, z);
+            inicializar();
+            continue;
+        }
+        break;
     }
 }
 

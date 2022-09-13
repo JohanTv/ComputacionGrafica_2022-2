@@ -148,22 +148,10 @@ void Mundo::Escenario4(){
     Esfera *pEsf = new Esfera(vec3(3,10,0), 5);
     pEsf->set(vec3(1,1,1), 0.9, 0.5, 8, 1.5);
 
-    // Esfera *pEsf2 = new Esfera(vec3(6,6,3), 5);
-    // pEsf2->set(vec3(1,0,0), 0.9, 1, 32);
-
-    // Esfera *pEsf3 = new Esfera(vec3(4,3,-6), 5);
-    // pEsf3->set(vec3(1,1,0), 0.9);
-
-    // Plano *pPlano = new Plano(vec3(0,1,0),2);
-    // pPlano->set(vec3(0,0,1), 0.7);
-
     Plano *pPlano2 = new Plano(vec3(1,0,0),20);
     pPlano2->set(vec3(0,1,0), 0.7, 0.5, 8);
 
     objetos.emplace_back( pEsf );
-    // objetos.emplace_back( pEsf2 );
-    // objetos.emplace_back( pEsf3 );
-    // objetos.emplace_back( pPlano );
     objetos.emplace_back( pPlano2 );
 
     camara.renderizar(objetos, luces);
@@ -261,12 +249,32 @@ void Mundo::Escenario7(){
 }
 
 void Mundo::Proyecto1(){
-    camara = Camara(vec3(0,0,0), vec3(0,1,0), vec3(3,15,30), 4, 60, 800, 600);
-    camara.inicializar();
+        camara = Camara(vec3(0, 0, 0), vec3(0,1,0), vec3(3,20,50), 4, 60, 800, 600);
+        camara.inicializar();
 
-    Cilindro *pCil1 = new Cilindro(vec3(0,2,10), vec3(0,10,10), 6);
-    pCil1->set(vec3(0.1,1,1), 0, 0.9, 8, 0);
-    camara.renderizar(objetos, luces);
+        Luz *pLuz = new Luz(vec3(30, 5, 20), vec3(1, 1, 1), true, 2);
+        luces.emplace_back(pLuz);
 
-    reset();
+        // Luciernagas
+        Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0), true, 1);
+        luces.emplace_back(luciernaga1);
+        // Luciernagas
+
+        solidify_lights();
+        Plano *pPlano = new Plano(vec3(0,1,0),0);
+        pPlano->set(vec3(0.1,0.1,1), 0.7);
+
+        Plano *pPlano2 = new Plano(vec3(1,0,0),-10);
+        pPlano2->set(vec3(1,1,1), 0.2, 1, 8);
+
+        Cilindro *pCil1 = new Cilindro(vec3(6,2,15), vec3(6,20,15), 10);
+        pCil1->set(vec3(0.1,1,1), 0, 0.9, 8, 1.5);
+
+        objetos.emplace_back( pPlano );
+        objetos.emplace_back( pPlano2 );
+        objetos.emplace_back(pCil1);
+
+        camara.renderizar(objetos, luces);
+
+        reset();
 }
