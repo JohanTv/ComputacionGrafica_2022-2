@@ -33,7 +33,7 @@ public:
     vec3 backgroud_color;
 
     Camara(){}
-    Camara(vec3 _center, vec3 _up, vec3 _eye, float _near_, float _fov, float _w, float _h, vec3 _background_color = vec3(1, 1, 1))
+    Camara(vec3 _center, vec3 _up, vec3 _eye, float _near_, float _fov, float _w, float _h, vec3 _background_color = vec3(0, 0, 0))
         : fov(_fov), w(_w), h(_h), _near(_near_), eye(_eye), center(_center), up(_up), backgroud_color(_background_color) {}
 
     void inicializar() {
