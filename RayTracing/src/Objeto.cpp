@@ -1,7 +1,5 @@
 #include <cmath>
 #include "Objeto.h"
-#include <iostream>
-using namespace std;
 
 bool Esfera::interseccion(Rayo rayo, float &t, vec3 &normal) {
     vec3 d = rayo.dir;
@@ -35,8 +33,8 @@ bool Plano::interseccion(Rayo rayo, float &t, vec3 &normal_s) {
     if (nd == 0) return false;
     t = (normal*d - rayo.ori).punto(normal) / nd;
     if (t < 0) return false;
-    normal_s = nd > 0 ? -normal : normal;
-    //normal_s = normal;
+    //normal_s = nd > 0 ? -normal : normal;
+    normal_s = normal;
     return true;
 }
 
@@ -55,10 +53,10 @@ bool Cilindro::interseccion(Rayo rayo, float &t, vec3 &normal) {
     if( h < 0.0 ) return false; //no intersection
     h = sqrt(h);
     t = (-b-h)/a;
-    if (t <= 0) return false;
+    // if (t <= 0) return false;
     // body
     float y = caoc + t*card;
-    if ( y > 0.0 && y < caca ) {
+    if ( y > 0.0 && y < caca && t > 0) {
         normal = (oc + t*rd - ca*y/caca)/ra;
         normal.normalize();
         return true;

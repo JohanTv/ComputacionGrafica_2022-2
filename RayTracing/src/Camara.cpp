@@ -51,11 +51,11 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
     }
 
     if(!closest_object)
-        return this->backgroud_color;
+        return vec3(0, 0, 0);
 
-    if(closest_object->ks == -1){
+    if(closest_object->is_light())
         return closest_object->color;
-    }
+
     //////////////////////////////////////////
     
     vec3 pi = rayo.ori + mindist * rayo.dir;
@@ -69,8 +69,8 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
 
     bool shadow = false;
     for(auto& object : objects){
-         if (object->interseccion(rayo_sombra, t_tmp, normal)){
-            if(object->ks != -1 && t_tmp <= dist_to_light) {
+         if (!object->is_light() && object->interseccion(rayo_sombra, t_tmp, normal)){
+            if(t_tmp <= dist_to_light) {
                 shadow = true;
                 break;
             }
@@ -102,11 +102,12 @@ jumpto:;
 
     if (kr > 0) {
         Rayo rayo_reflexivo;
-        rayo_reflexivo.ori = outside ? pi - bias : pi + bias;
+        rayo_reflexivo.ori = outside ? pi + bias : pi - bias;
         rayo_reflexivo.dir = 2 * (v.punto(N)) * N - v;
         rayo_reflexivo.dir.normalize();
         color_reflexivo = calculate_color(rayo_reflexivo, objects, luces, depth + 1);
     }
+
     color = closest_object->color * (ambiente + diffuse + specular);
     color = color + color_reflexivo * kr + color_refractivo * kt;
     color.max_to_one();
@@ -114,7 +115,7 @@ jumpto:;
     return color;
 }
 
-void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces, bool reflection) {
+void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces) {
     pImg = new CImg<BYTE>(w, h, 1, 3);
     CImgDisplay dis_img((*pImg), "Imagen RayCasting en Perspectiva ");
 
@@ -124,7 +125,7 @@ void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces, bool refl
         for (int y=0; y < h; y++){
             rayo.dir = -f*ze + a*(y/h -0.5)*ye + b*(x/w-0.5)*xe;
             rayo.dir.normalize();
-            vec3 color = calculate_color(rayo, objects, luces, reflection ? 1 : -1);
+            vec3 color = calculate_color(rayo, objects, luces, 1);
             fill_pixel(x, y, color);    
         }
 

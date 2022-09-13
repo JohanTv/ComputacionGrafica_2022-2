@@ -1,14 +1,15 @@
 #pragma once
 
 #include "vector.h"
-#include "objeto.h"
+#include "Objeto.h"
 
 class Luz : public Esfera {
 public:
-//    Luz(){}
-    Luz(vec3 _cen, vec3 _color, bool _visible = false):Esfera(_cen, 4), visible(_visible){
-        color = _color;
-        ks = kd = -1;
-};
     bool visible;
+    
+    Luz() : Esfera() {}
+    Luz(vec3 _cen, vec3 _color, bool _visible = false, float _radio = 4) : Esfera(_cen, _radio), visible(_visible){
+        color = _color;
+        ks = -1, kd = 0;
+    }
 };

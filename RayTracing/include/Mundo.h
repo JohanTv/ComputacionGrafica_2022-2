@@ -12,7 +12,8 @@ public:
     vector<Objeto*> objetos;
     vector<Luz*> luces;
     Camara camara;
-    void solidifyLights();
+    
+    void solidify_lights();
     void Escenario0();
     void Escenario1();
     void Escenario2();
@@ -20,6 +21,7 @@ public:
     void Escenario4();
     void Escenario5();
     void Escenario6();
+    void Escenario7();
 
     void Proyecto1();
 
