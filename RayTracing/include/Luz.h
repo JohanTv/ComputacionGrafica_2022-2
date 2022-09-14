@@ -10,6 +10,6 @@ public:
     Luz() : Esfera() {}
     Luz(vec3 _cen, vec3 _color, bool _visible = false, float _radio = 4) : Esfera(_cen, _radio), visible(_visible){
         color = _color;
-        ks = -1, kd = 0;
+        ks = -1, kd = 0, n = 0;
     }
 };

@@ -42,7 +42,7 @@ public:
         z = z/m;
     }
     
-    double get_magnitude() {
+    float get_magnitude() {
         return sqrt(x*x + y*y + z*z);
     }
     // para los colores

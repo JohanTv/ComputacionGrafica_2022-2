@@ -258,7 +258,9 @@ void Mundo::Proyecto1(){
 
         // Luciernagas
         Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0), true, 1);
+        Luz *luciernaga2 = new Luz(vec3(8, 15, 18), vec3(1, 1, 0), true, 1);
         luces.emplace_back(luciernaga1);
+        luces.emplace_back(luciernaga2);
         // Luciernagas
 
         solidify_lights();

@@ -15,7 +15,7 @@ typedef unsigned char BYTE;
 class Camara {
 private:
     vec3 get_diffuse_reflection(vec3& N, vec3& L, vec3& color, float& kd);
-    vec3 get_specular_reflection(vec3& N, vec3& L, vec3& pi, vec3& color, float& ks, int n = 4);
+    vec3 get_specular_reflection(vec3& N, vec3& L, vec3& pi, vec3& color, float& ks, float n = 4);
     void fill_pixel(int x, int y, vec3 color);
     vec3 calculate_color(Rayo rayo, vector<Objeto*>& objetos, vector<Luz*>& luces, int depth = -1);
     void fresnel(vec3 I, vec3 N, float& ior, float &kr );

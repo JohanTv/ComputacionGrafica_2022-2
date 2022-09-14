@@ -11,7 +11,7 @@ vec3 Camara::get_diffuse_reflection(vec3& N, vec3& L, vec3& color, float& kd){
     return diffuse;
 }
 
-vec3 Camara::get_specular_reflection(vec3& N, vec3& L, vec3& dir, vec3& color, float& ks, int n){
+vec3 Camara::get_specular_reflection(vec3& N, vec3& L, vec3& dir, vec3& color, float& ks, float n){
     vec3 specular(0, 0, 0);
     vec3 r = 2*L.punto(N)*N-L;
     vec3 v = -dir;
@@ -33,9 +33,8 @@ void Camara::fill_pixel(int x, int y, vec3 color){
 
 vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &luces, int depth){
     if (depth > 7)
-        return vec3(0, 0, 0);
+        return this->backgroud_color;
 
-    Luz luz = *(luces[0]);
     vec3 color, normal, N;
     float t_tmp, mindist = _INFINITY;
     Objeto* closest_object = nullptr;
@@ -55,34 +54,38 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
 
     if(closest_object->is_light())
         return closest_object->color;
-
-    //////////////////////////////////////////
     
     vec3 pi = rayo.ori + mindist * rayo.dir;
-    vec3 L = luz.cen - pi;
-    float dist_to_light = L.get_magnitude();
-    L.normalize();
-    Rayo rayo_sombra(pi + N * 0.01, L);
-    vec3 ambiente = vec3(0.1, 0.1, 0.1) * closest_object->kd;
     vec3 bias = 0.001 * N;
-    vec3 diffuse, specular, color_reflexivo, color_refractivo;
+    vec3 ambiente = vec3(0.1, 0.1, 0.1) * closest_object->kd;
+    vec3 diffuse, specular;
+    vec3 color_reflexivo, color_refractivo;
 
-    bool shadow = false;
-    for(auto& object : objects){
-         if (!object->is_light() && object->interseccion(rayo_sombra, t_tmp, normal)){
-            if(t_tmp <= dist_to_light) {
-                shadow = true;
-                break;
+    for(auto& luz : luces){
+        vec3 L = luz->cen - pi;
+        float dist_to_light = L.get_magnitude();
+        L.normalize();
+        Rayo rayo_sombra(pi + bias, L);
+
+        bool shadow = false;
+        for(auto& object : objects){
+            if (!object->is_light() && object->interseccion(rayo_sombra, t_tmp, normal)){
+                if(t_tmp <= dist_to_light) {
+                    shadow = true;
+                    break;
+                }
             }
         }
+
+        if(shadow) goto jumpto;
+
+        diffuse = diffuse + get_diffuse_reflection(N, L, luz->color, closest_object->kd);
+        specular = specular + get_specular_reflection(N, L, rayo.dir, luz->color, closest_object->ks, closest_object->n);
+
+        jumpto:;
     }
 
-    if(shadow) goto jumpto;
 
-    diffuse = get_diffuse_reflection(N, L, luz.color, closest_object->kd);
-    specular = get_specular_reflection(N, L, rayo.dir, luz.color, closest_object->ks, closest_object->n);
-
-jumpto:;
     float kr = closest_object->ks;
     float kt = 0;
     bool outside = rayo.dir.punto(N) < 0;
@@ -135,7 +138,7 @@ void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces) {
         }
 
         if (!dis_img.is_closed()) {
-            std::cout << "Add new x, y, and z";
+            std::cout << "Add new x, y, and z >> ";
             std::cin >> x >> y >> z;
             if(dis_img.is_closed()) break;
             dis_img.close();
