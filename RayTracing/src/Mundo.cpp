@@ -253,12 +253,12 @@ void Mundo::Proyecto1(){
         camara = Camara(vec3(0, 0, 0), vec3(0,1,0), vec3(3,30,50), 4, 60, 800, 600);
         camara.inicializar();
 
-        Luz *pLuz = new Luz(vec3(30, 5, 20), vec3(1, 1, 1), true, 2);
-        luces.emplace_back(pLuz);
+//        Luz *pLuz = new Luz(vec3(10, 5, 50), vec3(1, 1, 0), true, 2);
+//        luces.emplace_back(pLuz);
 
         // Luciernagas
         Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0), true, 1);
-        Luz *luciernaga2 = new Luz(vec3(8, 15, 18), vec3(1, 1, 0), true, 1);
+        Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0), true, 1);
         luces.emplace_back(luciernaga1);
         luces.emplace_back(luciernaga2);
         // Luciernagas
@@ -274,7 +274,7 @@ void Mundo::Proyecto1(){
         pCil1->set(vec3(0.1,1,1), 0, 0.9, 8, 1.5);
 
         objetos.emplace_back( pPlano );
-        objetos.emplace_back( pPlano2 );
+//        objetos.emplace_back( pPlano2 );
         objetos.emplace_back(pCil1);
 
         camara.renderizar(objetos, luces);

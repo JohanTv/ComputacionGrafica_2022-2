@@ -58,7 +58,7 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
     vec3 pi = rayo.ori + mindist * rayo.dir;
     vec3 bias = 0.001 * N;
     vec3 ambiente = vec3(0.1, 0.1, 0.1) * closest_object->kd;
-    vec3 diffuse, specular;
+    vec3 diffuse, specular = {0,0,0};
     vec3 color_reflexivo, color_refractivo;
 
     for(auto& luz : luces){
@@ -71,6 +71,7 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
         for(auto& object : objects){
             if (!object->is_light() && object->interseccion(rayo_sombra, t_tmp, normal)){
                 if(t_tmp <= dist_to_light) {
+                    if(object->idr > 0) continue;
                     shadow = true;
                     break;
                 }
