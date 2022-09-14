@@ -257,9 +257,9 @@ void Mundo::Proyecto1(){
 //        luces.emplace_back(pLuz);
 
         // Luciernagas
-        Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0.01), true, 1);
-        Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0.01), true, 1);
-        Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0.1), true, 1);
+        Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0), true, 1);
+        Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0), true, 1);
+        Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0), true, 1);
         Luz *luciernaga4 = new Luz(vec3(4, 5, 20), vec3(1, 1, 0), true, 1);
         luces.emplace_back(luciernaga1);
         luces.emplace_back(luciernaga2);
@@ -268,7 +268,7 @@ void Mundo::Proyecto1(){
 
         solidify_lights();
         Plano *pPlano = new Plano(vec3(0,1,0),0);
-        pPlano->set(vec3(0.1,0.1,1), 0.7, 0.1);
+        pPlano->set(vec3(0.1,0.1,1), 0.7);
 
         Plano *pPlano2 = new Plano(vec3(1,0,0),-10);
         pPlano2->set(vec3(0.5,0.5,0.5), 0, 0, 8,  0, 1.2);
