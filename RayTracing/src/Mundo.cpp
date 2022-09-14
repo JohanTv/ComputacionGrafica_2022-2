@@ -257,24 +257,27 @@ void Mundo::Proyecto1(){
 //        luces.emplace_back(pLuz);
 
         // Luciernagas
-        Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0), true, 1);
-        Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0), true, 1);
+        Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0.01), true, 1);
+        Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0.01), true, 1);
+        Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0.1), true, 1);
+        Luz *luciernaga4 = new Luz(vec3(4, 5, 20), vec3(1, 1, 0), true, 1);
         luces.emplace_back(luciernaga1);
         luces.emplace_back(luciernaga2);
+        luces.emplace_back(luciernaga3);
         // Luciernagas
 
         solidify_lights();
         Plano *pPlano = new Plano(vec3(0,1,0),0);
-        pPlano->set(vec3(0.1,0.1,1), 0.7);
+        pPlano->set(vec3(0.1,0.1,1), 0.7, 0.1);
 
         Plano *pPlano2 = new Plano(vec3(1,0,0),-10);
-        pPlano2->set(vec3(1,1,1), 0.2, 1, 8);
+        pPlano2->set(vec3(0.5,0.5,0.5), 0, 0, 8,  0, 1.2);
 
         Cilindro *pCil1 = new Cilindro(vec3(6,2,15), vec3(6,20,15), 10);
         pCil1->set(vec3(0.1,1,1), 0, 0.9, 8, 1.5);
 
         objetos.emplace_back( pPlano );
-//        objetos.emplace_back( pPlano2 );
+        objetos.emplace_back( pPlano2 );
         objetos.emplace_back(pCil1);
 
         camara.renderizar(objetos, luces);

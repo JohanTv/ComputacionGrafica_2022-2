@@ -5,20 +5,20 @@
 class Objeto {
 public:
     vec3 color;
-    float kd, ks, idr, n;
+    float kd, ks, kr, idr, n;
     
     Objeto(){ set_default_setting(); }
     Objeto(vec3 _color) : color(_color){ set_default_setting(); };
     
     virtual bool interseccion(Rayo rayo, float &t, vec3 &normal) = 0;
 
-    void set(vec3 _color, float _kd, float _ks=0, float _n=0, float _idr=0) {
-        color = _color; kd = _kd; ks = _ks; n = _n; idr = _idr;
+    void set(vec3 _color, float _kd, float _ks=0, float _n=0, float _idr=0, float _kr = 0) {
+        color = _color; kd = _kd; ks = _ks; n = _n; idr = _idr; kr = _kr;
     }
 
     bool is_light(){ return this->ks == -1; }
     void set_default_setting(){
-        kd = ks = idr = 0;
+        kd = ks = idr = kr = 0;
         n = 4;
     }
 };

@@ -87,7 +87,7 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
     }
 
 
-    float kr = closest_object->ks;
+    float kr = closest_object->kr;
     float kt = 0;
     bool outside = rayo.dir.punto(N) < 0;
     vec3 v = -rayo.dir;
@@ -109,7 +109,7 @@ vec3 Camara::calculate_color(Rayo rayo, vector<Objeto*>& objects, vector<Luz*> &
         rayo_reflexivo.ori = outside ? pi + bias : pi - bias;
         rayo_reflexivo.dir = 2 * (v.punto(N)) * N - v;
         rayo_reflexivo.dir.normalize();
-        color_reflexivo = calculate_color(rayo_reflexivo, objects, luces, depth + 1);
+        color_reflexivo = calculate_color(rayo_reflexivo, objects, luces, depth + 3);
     }
 
     color = closest_object->color * (ambiente + diffuse + specular);
