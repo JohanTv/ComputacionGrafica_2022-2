@@ -25,5 +25,6 @@ public:
 
     void Proyecto1();
 
+    void generar_video(vector<Luz*>);
     void reset();
 };

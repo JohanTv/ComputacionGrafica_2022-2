@@ -49,4 +49,5 @@ public:
     
     void renderizar();
     void renderizar(vector<Objeto*> &objetos, vector<Luz*> &luces);
+    void renderizar(vector<Objeto*> &objects, vector<Luz*> &luces, string filename); 
 };

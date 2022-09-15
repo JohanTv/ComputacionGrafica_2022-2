@@ -12,9 +12,10 @@ private:
     vec3 center;
     
 public:
-    Esferav2(vec3 pos, float _radio = 1, int op = 1, bool _sideway = true){
+    Esferav2(vec3 pos, float _step, float _radio = 1, int op = 1, bool _sideway = true){
         sideway = _sideway;
         radio = _radio;
+        step = _step;
         if(op == 0){
             phi = 90, tetha = 90;
             center = vec3(pos.x, pos.y - radio, pos.z);

@@ -1,4 +1,5 @@
 #include "Mundo.h"
+#include "Esferav2.h"
 
 void Mundo::reset(){
     for(int i = 0; i < objetos.size(); i++){
@@ -258,6 +259,7 @@ void Mundo::Proyecto1(){
     // luces.emplace_back(pLuz);
 
     // Luciernagas
+    vector<Luz*> luciernagas;
     Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0.01), true, 1);
     Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0.01), true, 1);
     Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0.01), true, 1);
@@ -265,6 +267,7 @@ void Mundo::Proyecto1(){
     luces.emplace_back(luciernaga1);
     luces.emplace_back(luciernaga2);
     luces.emplace_back(luciernaga3);
+    luciernagas = {luciernaga1, luciernaga2, luciernaga3};
     // Luciernagas
     solidify_lights();
     Esfera *pEsf = new Esfera(vec3(25,15,-5), 5);
@@ -292,7 +295,43 @@ void Mundo::Proyecto1(){
     objetos.emplace_back(pEsf);
     objetos.emplace_back(pEsf2);
     objetos.emplace_back(pEsf3);
-    camara.renderizar(objetos, luces);
+
+    int op = 1;
+    cout << "[1] Generar una imagen" << endl;
+    cout << "[2] Generar video" << endl;
+    cout << "Inserte opcion >> ";
+    cin >> op;
+    if(op == 1) camara.renderizar(objetos, luces);
+    else if(op == 2) generar_video(luciernagas);
 
     reset();
+}
+
+void Mundo::generar_video(vector<Luz*> luciernagas){
+    int video_time = 2; // en segundos
+    int fps = 10; // frames por segundos
+    float loop_time = 1;
+    int total_frames = fps * video_time;
+    float step = 360.0 / (fps / loop_time);
+    //vector<Luz*> luciernagas = luces;
+    vector<Esferav2*> change_pos;
+    srand(time(NULL));
+    for(auto& luciernaga : luciernagas){
+        change_pos.push_back(new Esferav2(luciernaga->cen, step, 0.8, rand() % 6, rand() % 2));
+    }
+ 
+    for(int i = 0; i < total_frames; i++){
+        string filename = "imagen_" + to_string(i) + ".bmp";
+        camara.renderizar(objetos, luces, filename);
+
+        for(int j = 0; j < luciernagas.size(); j++){
+            luciernagas[j]->cen = change_pos[j]->calculate_next_coordinate();
+        }
+    }
+
+    for(int i = 0; i < change_pos.size(); i++){
+        delete change_pos[i];
+    }
+
+    change_pos.clear();
 }

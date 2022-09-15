@@ -151,6 +151,26 @@ void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces) {
     }
 }
 
+void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces, string filename) {
+    pImg = new CImg<BYTE>(w, h, 1, 3);
+    CImgDisplay dis_img((*pImg), "Imagen RayCasting en Perspectiva ");
+    Rayo rayo(eye);
+
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < h; y++) {
+            rayo.dir = -f * ze + a * (y / h - 0.5) * ye + b * (x / w - 0.5) * xe;
+            rayo.dir.normalize();
+            vec3 color = calculate_color(rayo, objects, luces, 1);
+            fill_pixel(x, y, color);
+        }
+    }
+
+    dis_img.render((*pImg));
+    dis_img.close();
+
+    pImg->save(filename.c_str());
+}
+
 vec3 Camara::refract(vec3 I, vec3 N, float ior){
     float cosi = clamp(-1, 1, I.punto(N));
     float etai = 1, etat = ior;
