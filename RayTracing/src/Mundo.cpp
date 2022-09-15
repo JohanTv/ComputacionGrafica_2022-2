@@ -252,7 +252,7 @@ void Mundo::Escenario7(){
 void Mundo::Proyecto1(){
         camara = Camara(vec3(0, 0, 0), vec3(0,1,0), vec3(3,30,50), 4, 60, 800, 600);
         camara.inicializar();
-
+        // 3 50 30
 //        Luz *pLuz = new Luz(vec3(10, 5, 50), vec3(1, 1, 0), true, 2);
 //        luces.emplace_back(pLuz);
 
@@ -265,8 +265,15 @@ void Mundo::Proyecto1(){
         luces.emplace_back(luciernaga2);
         luces.emplace_back(luciernaga3);
         // Luciernagas
-
         solidify_lights();
+        Esfera *pEsf = new Esfera(vec3(25,15,-5), 5);
+        pEsf->set(vec3(0.1,1,0.1), 0.9, 0.5, 8, 1.5);
+
+        Esfera *pEsf2 = new Esfera(vec3(30,5,10), 5);
+        pEsf2->set(vec3(1,0.1,0.1), 0.1, 0.9, 16, 0, 1.3);
+//        Esfera *pEsf = new Esfera(vec3(3,3,0), 3);
+//        pEsf->set(vec3(0.1,1,0.1), 0.9, 0.5, 8, 1.5);
+
         Plano *pPlano = new Plano(vec3(0,1,0),0);
         pPlano->set(vec3(0.1,0.1,1), 0.7);
 
@@ -279,7 +286,8 @@ void Mundo::Proyecto1(){
         objetos.emplace_back( pPlano );
         objetos.emplace_back( pPlano2 );
         objetos.emplace_back(pCil1);
-
+        objetos.emplace_back(pEsf);
+        objetos.emplace_back(pEsf2);
         camara.renderizar(objetos, luces);
 
         reset();

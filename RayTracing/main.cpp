@@ -40,7 +40,7 @@ void menu(){
 }
 
 int main() {
-//    menu();
-    mundo.Proyecto1();
+    menu();
+//    mundo .Proyecto1();
     return 0;
 }
