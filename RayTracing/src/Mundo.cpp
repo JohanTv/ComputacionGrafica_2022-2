@@ -1,6 +1,15 @@
 #include "Mundo.h"
 #include "Esferav2.h"
 
+int random_number(int min, int max){
+    return min + (rand() % (max - min + 1));
+}
+
+bool point_inside_circle(float x1, float y1, float x2, float y2, float radio){
+    float x = x1 - x2, y = y1 - y2;
+    return sqrt(x * x + y * y) <= radio;
+}
+
 void Mundo::reset(){
     for(int i = 0; i < objetos.size(); i++){
         if(objetos[i]->is_light()) continue;
@@ -258,16 +267,37 @@ void Mundo::Proyecto1(){
     // Luz *pLuz = new Luz(vec3(10, 5, 50), vec3(1, 1, 0), true, 2);
     // luces.emplace_back(pLuz);
 
+    vec3 pa(6, 2, 15), pb(6, 20, 15);
+    float radio = 10;
+    auto *pCil1 = new Cilindro(pa, pb, radio);
+    pCil1->set(vec3(0.01,0.01,1), 0, 0.9, 8, 1.5);
+
     // Luciernagas
+    int nluciernagas = 15;
+    float bias = 5;
     vector<Luz*> luciernagas;
-    Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0.01), true, 1);
-    Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0.01), true, 1);
-    Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0.01), true, 1);
-    Luz *luciernaga4 = new Luz(vec3(4, 5, 20), vec3(1, 1, 0), true, 1);
-    luces.emplace_back(luciernaga1);
-    luces.emplace_back(luciernaga2);
-    luces.emplace_back(luciernaga3);
-    luciernagas = {luciernaga1, luciernaga2, luciernaga3};
+    for(int i = 0; i < nluciernagas; ++i){
+        while(true){
+            float x = random_number(pa.x - (radio-bias), pa.x + (radio-bias));
+            float y = random_number(pa.y + 1, pb.y - 1);
+            float z = random_number(pa.z - (radio-bias), pa.z + (radio-bias));
+            vec3 pos(x, y, z);
+            if(point_inside_circle(x, z, pos.x, pos.z, radio)){
+                luciernagas.push_back(new Luz(pos, vec3(1, 1, 0.01), true, 0.5));
+                break;
+            }
+        }
+    }
+    cout << "Se generaron las luciernagas correctamente" << endl;
+    luces.insert(luces.end(), luciernagas.begin(), luciernagas.end());
+//    Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0.01), true, 1);
+//    Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0.01), true, 1);
+//    Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0.01), true, 1);
+//    Luz *luciernaga4 = new Luz(vec3(4, 5, 20), vec3(1, 1, 0), true, 1);
+//    luces.emplace_back(luciernaga1);
+//    luces.emplace_back(luciernaga2);
+//    luces.emplace_back(luciernaga3);
+//    luciernagas = {luciernaga1, luciernaga2, luciernaga3};
     // Luciernagas
     solidify_lights();
     Esfera *pEsf = new Esfera(vec3(25,15,-5), 5);
@@ -285,9 +315,6 @@ void Mundo::Proyecto1(){
 
     Plano *pPlano2 = new Plano(vec3(1,0,0),-10);
     pPlano2->set(vec3(0.5,0.5,0.5), 0, 0, 8,  0, 1.2);
-
-    Cilindro *pCil1 = new Cilindro(vec3(6,2,15), vec3(6,20,15), 10);
-    pCil1->set(vec3(0.01,0.01,1), 0, 0.9, 8, 1.5);
 
     objetos.emplace_back( pPlano );
     objetos.emplace_back( pPlano2 );
@@ -309,7 +336,7 @@ void Mundo::Proyecto1(){
 
 void Mundo::generar_video(vector<Luz*> luciernagas){
     int video_time = 2; // en segundos
-    int fps = 10; // frames por segundos
+    int fps = 60; // frames por segundos
     float loop_time = 1;
     int total_frames = fps * video_time;
     float step = 360.0 / (fps / loop_time);

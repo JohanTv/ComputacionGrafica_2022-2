@@ -50,6 +50,7 @@ build/
 
 # CMake
 RayTracing/cmake-build-debug/
+RayTracing/cmake-build-release/
 
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml

@@ -1,5 +1,5 @@
 #include "Camara.h"
-
+#include <omp.h>
 #define _INFINITY (std::numeric_limits<float>::max())
 
 vec3 Camara::get_diffuse_reflection(vec3& N, vec3& L, vec3& color, float& kd){
@@ -125,7 +125,7 @@ void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces) {
         pImg = new CImg<BYTE>(w, h, 1, 3);
         CImgDisplay dis_img((*pImg), "Imagen RayCasting en Perspectiva ");
         Rayo rayo(eye);
-
+#pragma omp parallel for default(none)
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
                 rayo.dir = -f * ze + a * (y / h - 0.5) * ye + b * (x / w - 0.5) * xe;
@@ -156,6 +156,7 @@ void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces, string fi
     CImgDisplay dis_img((*pImg), "Imagen RayCasting en Perspectiva ");
     Rayo rayo(eye);
 
+#pragma omp parallel for default(none)
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
             rayo.dir = -f * ze + a * (y / h - 0.5) * ye + b * (x / w - 0.5) * xe;

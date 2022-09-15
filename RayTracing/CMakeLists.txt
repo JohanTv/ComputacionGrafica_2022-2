@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 include_directories(src, include)
 
 if(UNIX AND NOT APPLE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fopenmp")
 endif()
 
 find_package(X11 REQUIRED)
