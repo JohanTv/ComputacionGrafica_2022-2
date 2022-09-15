@@ -1,4 +1,5 @@
 #include "Mundo.h"
+#include <omp.h>
 #include "Esferav2.h"
 
 int random_number(int min, int max){
@@ -260,20 +261,20 @@ void Mundo::Escenario7(){
 }
 
 void Mundo::Proyecto1(){
+    srand(time(NULL));
+
     camara = Camara(vec3(0, 0, 0), vec3(0,1,0), vec3(3,30,50), 4, 60, 800, 600);
     camara.inicializar();
     // 3 50 30
     // -5 50 -5
-    // Luz *pLuz = new Luz(vec3(10, 5, 50), vec3(1, 1, 0), true, 2);
-    // luces.emplace_back(pLuz);
+     Luz *pLuz = new Luz(vec3(6, 30, 15), vec3(0.3, 0.3, 0.3), true, 2);
+     luces.emplace_back(pLuz);
 
     vec3 pa(6, 2, 15), pb(6, 20, 15);
     float radio = 10;
-    auto *pCil1 = new Cilindro(pa, pb, radio);
-    pCil1->set(vec3(0.01,0.01,1), 0, 0.9, 8, 1.5);
 
     // Luciernagas
-    int nluciernagas = 15;
+    int nluciernagas = 8;
     float bias = 5;
     vector<Luz*> luciernagas;
     for(int i = 0; i < nluciernagas; ++i){
@@ -290,14 +291,6 @@ void Mundo::Proyecto1(){
     }
     cout << "Se generaron las luciernagas correctamente" << endl;
     luces.insert(luces.end(), luciernagas.begin(), luciernagas.end());
-//    Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0.01), true, 1);
-//    Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0.01), true, 1);
-//    Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0.01), true, 1);
-//    Luz *luciernaga4 = new Luz(vec3(4, 5, 20), vec3(1, 1, 0), true, 1);
-//    luces.emplace_back(luciernaga1);
-//    luces.emplace_back(luciernaga2);
-//    luces.emplace_back(luciernaga3);
-//    luciernagas = {luciernaga1, luciernaga2, luciernaga3};
     // Luciernagas
     solidify_lights();
     Esfera *pEsf = new Esfera(vec3(25,15,-5), 5);
@@ -305,20 +298,26 @@ void Mundo::Proyecto1(){
 
     Esfera *pEsf2 = new Esfera(vec3(30,5,10), 5);
     pEsf2->set(vec3(1,0.1,0.1), 0.1, 0.9, 16, 0, 1.3);
-//        Esfera *pEsf = new Esfera(vec3(3,3,0), 3);
-//        pEsf->set(vec3(0.1,1,0.1), 0.9, 0.5, 8, 1.5);
+
     Esfera *pEsf3 = new Esfera(vec3(19,15,0), 2);
     pEsf3->set(vec3(1,0.1,0.1), 0.1, 0.9, 16, 0, 1.3);
 
     Plano *pPlano = new Plano(vec3(0,1,0),0);
-    pPlano->set(vec3(0.1,0.1,1), 0.7);
+    pPlano->set(vec3(0.1,0.1,1), 0.5);
 
     Plano *pPlano2 = new Plano(vec3(1,0,0),-10);
     pPlano2->set(vec3(0.5,0.5,0.5), 0, 0, 8,  0, 1.2);
 
+    Cilindro *jarra = new Cilindro(pa, pb, radio);
+    jarra->set(vec3(0.01,0.01,1), 0, 0.9, 8, 1.5);
+
+    Cilindro *tapa = new Cilindro(vec3(6,19.9,15), vec3(6,22,15), 5);
+    tapa->set(vec3(0.7,0.7,0.7), 0.5, 0.9, 8, 0, 0);
+
     objetos.emplace_back( pPlano );
     objetos.emplace_back( pPlano2 );
-    objetos.emplace_back(pCil1);
+    objetos.emplace_back(jarra);
+    objetos.emplace_back(tapa);
     objetos.emplace_back(pEsf);
     objetos.emplace_back(pEsf2);
     objetos.emplace_back(pEsf3);
@@ -336,17 +335,17 @@ void Mundo::Proyecto1(){
 
 void Mundo::generar_video(vector<Luz*> luciernagas){
     int video_time = 2; // en segundos
-    int fps = 60; // frames por segundos
+    int fps = 10; // frames por segundos
     float loop_time = 1;
     int total_frames = fps * video_time;
     float step = 360.0 / (fps / loop_time);
     //vector<Luz*> luciernagas = luces;
     vector<Esferav2*> change_pos;
-    srand(time(NULL));
+
     for(auto& luciernaga : luciernagas){
         change_pos.push_back(new Esferav2(luciernaga->cen, step, 0.8, rand() % 6, rand() % 2));
     }
- 
+#pragma omp parallel for default(none)
     for(int i = 0; i < total_frames; i++){
         string filename = "imagen_" + to_string(i) + ".bmp";
         camara.renderizar(objetos, luces, filename);
