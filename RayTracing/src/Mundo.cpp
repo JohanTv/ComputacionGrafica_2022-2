@@ -253,13 +253,14 @@ void Mundo::Proyecto1(){
         camara = Camara(vec3(0, 0, 0), vec3(0,1,0), vec3(3,30,50), 4, 60, 800, 600);
         camara.inicializar();
         // 3 50 30
+        // -5 50 -5
 //        Luz *pLuz = new Luz(vec3(10, 5, 50), vec3(1, 1, 0), true, 2);
 //        luces.emplace_back(pLuz);
 
         // Luciernagas
-        Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0), true, 1);
-        Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0), true, 1);
-        Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0), true, 1);
+        Luz *luciernaga1 = new Luz(vec3(6, 11, 15), vec3(1, 1, 0.01), true, 1);
+        Luz *luciernaga2 = new Luz(vec3(10, 5, 20), vec3(1, 1, 0.01), true, 1);
+        Luz *luciernaga3 = new Luz(vec3(4, 15, 20), vec3(1, 1, 0.01), true, 1);
         Luz *luciernaga4 = new Luz(vec3(4, 5, 20), vec3(1, 1, 0), true, 1);
         luces.emplace_back(luciernaga1);
         luces.emplace_back(luciernaga2);
@@ -273,6 +274,8 @@ void Mundo::Proyecto1(){
         pEsf2->set(vec3(1,0.1,0.1), 0.1, 0.9, 16, 0, 1.3);
 //        Esfera *pEsf = new Esfera(vec3(3,3,0), 3);
 //        pEsf->set(vec3(0.1,1,0.1), 0.9, 0.5, 8, 1.5);
+        Esfera *pEsf3 = new Esfera(vec3(19,15,0), 2);
+        pEsf3->set(vec3(1,0.1,0.1), 0.1, 0.9, 16, 0, 1.3);
 
         Plano *pPlano = new Plano(vec3(0,1,0),0);
         pPlano->set(vec3(0.1,0.1,1), 0.7);
@@ -281,14 +284,15 @@ void Mundo::Proyecto1(){
         pPlano2->set(vec3(0.5,0.5,0.5), 0, 0, 8,  0, 1.2);
 
         Cilindro *pCil1 = new Cilindro(vec3(6,2,15), vec3(6,20,15), 10);
-        pCil1->set(vec3(0.1,1,1), 0, 0.9, 8, 1.5);
+        pCil1->set(vec3(0.01,0.01,1), 0, 0.9, 8, 1.5);
 
         objetos.emplace_back( pPlano );
         objetos.emplace_back( pPlano2 );
         objetos.emplace_back(pCil1);
         objetos.emplace_back(pEsf);
         objetos.emplace_back(pEsf2);
-        camara.renderizar(objetos, luces);
+        objetos.emplace_back(pEsf3);
+    camara.renderizar(objetos, luces);
 
         reset();
 }
