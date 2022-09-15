@@ -255,8 +255,8 @@ void Mundo::Proyecto1(){
     camara.inicializar();
     // 3 50 30
     // -5 50 -5
-    // Luz *pLuz = new Luz(vec3(10, 5, 50), vec3(1, 1, 0), true, 2);
-    // luces.emplace_back(pLuz);
+     Luz *pLuz = new Luz(vec3(6, 30, 15), vec3(0.3, 0.3, 0.3), true, 2);
+     luces.emplace_back(pLuz);
 
     // Luciernagas
     vector<Luz*> luciernagas;
@@ -281,17 +281,21 @@ void Mundo::Proyecto1(){
     pEsf3->set(vec3(1,0.1,0.1), 0.1, 0.9, 16, 0, 1.3);
 
     Plano *pPlano = new Plano(vec3(0,1,0),0);
-    pPlano->set(vec3(0.1,0.1,1), 0.7);
+    pPlano->set(vec3(0.1,0.1,1), 0.5);
 
     Plano *pPlano2 = new Plano(vec3(1,0,0),-10);
     pPlano2->set(vec3(0.5,0.5,0.5), 0, 0, 8,  0, 1.2);
 
-    Cilindro *pCil1 = new Cilindro(vec3(6,2,15), vec3(6,20,15), 10);
-    pCil1->set(vec3(0.01,0.01,1), 0, 0.9, 8, 1.5);
+    Cilindro *jarra = new Cilindro(vec3(6,2,15), vec3(6,20,15), 10);
+    jarra->set(vec3(0.01,0.01,1), 0, 0.9, 8, 1.5);
+
+    Cilindro *tapa = new Cilindro(vec3(6,19.9,15), vec3(6,22,15), 5);
+    tapa->set(vec3(0.7,0.7,0.7), 0.5, 0.9, 8, 0, 0);
 
     objetos.emplace_back( pPlano );
     objetos.emplace_back( pPlano2 );
-    objetos.emplace_back(pCil1);
+    objetos.emplace_back(jarra);
+    objetos.emplace_back(tapa);
     objetos.emplace_back(pEsf);
     objetos.emplace_back(pEsf2);
     objetos.emplace_back(pEsf3);
