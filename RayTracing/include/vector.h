@@ -2,11 +2,13 @@
 
 #include <cmath>
 #include <algorithm>
-#include "iostream"
+#include <iostream>
 
 template <typename T> int sgn(T val) {
     return (T(0) < val) - (val < T(0));
 }
+
+using namespace std;
 
 class vec3 {
 public:
@@ -53,6 +55,11 @@ public:
             y /= maxValue;
             z /= maxValue;
         }
+    }
+
+    friend ostream& operator<<(ostream& out, vec3 v){
+        out << "(" << v.x << ", " << v.y << ", " << v.z << ")" << endl;
+        return out;
     }
 };
 

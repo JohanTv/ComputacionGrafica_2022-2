@@ -12,6 +12,15 @@ private:
     vec3 center;
     
 public:
+    Esferav2(vec3 _center, float _step, float _radio, bool _sideway, float _tetha, float _phi){
+        center = _center;
+        step = _step;
+        radio = _radio;
+        sideway = _sideway;
+        tetha = _tetha;
+        phi = _phi;
+    }
+
     Esferav2(vec3 pos, float _step, float _radio = 1, int op = 1, bool _sideway = true){
         sideway = _sideway;
         radio = _radio;
@@ -35,6 +44,28 @@ public:
         }else{
             sideway = false;
             phi = (rand() % 2) ? 0 : 90, tetha = 180;
+            center = vec3(pos.x, pos.y, pos.z + radio);
+        }
+    }
+
+    Esferav2(vec3 pos, float _step, float _radio, int op, bool _sideway, int x){
+        sideway = _sideway;
+        radio = _radio;
+        step = _step;
+        phi = rand() % 181,  tetha = rand() % 181;
+        if(op == 0){
+            center = vec3(pos.x, pos.y - radio, pos.z);
+        }else if(op == 1){
+            center = vec3(pos.x - radio, pos.y, pos.z);
+        }else if(op == 2){
+            center = vec3(pos.x, pos.y + radio, pos.z);
+        }else if(op == 3){
+            center = vec3(pos.x + radio, pos.y, pos.z);
+        }else if(op == 4){
+            sideway = false;
+            center = vec3(pos.x, pos.y, pos.z - radio);
+        }else{
+            sideway = false;
             center = vec3(pos.x, pos.y, pos.z + radio);
         }
     }

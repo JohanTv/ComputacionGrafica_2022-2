@@ -1,5 +1,4 @@
 #include "Camara.h"
-#include <omp.h>
 #define _INFINITY (std::numeric_limits<float>::max())
 
 vec3 Camara::get_diffuse_reflection(vec3& N, vec3& L, vec3& color, float& kd){
@@ -153,7 +152,8 @@ void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces) {
 
 void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces, string filename) {
     pImg = new CImg<BYTE>(w, h, 1, 3);
-    CImgDisplay dis_img((*pImg), "Imagen RayCasting en Perspectiva ");
+    string screen_name = "RayCasting" + filename;
+    CImgDisplay dis_img((*pImg), screen_name.c_str());
     Rayo rayo(eye);
 
 #pragma omp parallel for default(none)
@@ -170,6 +170,8 @@ void Camara::renderizar(vector<Objeto*> &objects, vector<Luz*> &luces, string fi
     dis_img.close();
 
     pImg->save(filename.c_str());
+
+    delete pImg;
 }
 
 vec3 Camara::refract(vec3 I, vec3 N, float ior){

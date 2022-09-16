@@ -262,15 +262,14 @@ void Mundo::Escenario7(){
 
 void Mundo::Proyecto1(){
     srand(time(NULL));
-
-    camara = Camara(vec3(0, 0, 0), vec3(0,1,0), vec3(3,30,50), 4, 60, 800, 600);
+    vec3 pa(6, 2, 15), pb(6, 20, 15);
+    camara = Camara(pb, vec3(0,1,0), vec3(3,30,50), 4, 60, 800, 600);
     camara.inicializar();
     // 3 50 30
     // -5 50 -5
-     Luz *pLuz = new Luz(vec3(6, 30, 15), vec3(0.3, 0.3, 0.3), true, 2);
+     Luz *pLuz = new Luz(vec3(6, 30, 15), vec3(0.3, 0.3, 0.3), false, 2);
      luces.emplace_back(pLuz);
 
-    vec3 pa(6, 2, 15), pb(6, 20, 15);
     float radio = 10;
 
     // Luciernagas
@@ -334,22 +333,29 @@ void Mundo::Proyecto1(){
 }
 
 void Mundo::generar_video(vector<Luz*> luciernagas){
-    int video_time = 2; // en segundos
-    int fps = 10; // frames por segundos
-    float loop_time = 1;
+    int video_time = 30; // en segundos
+    int fps = 60; // frames por segundos
+    float loop_time = 0.5;
+    float loop_time_camara = 7;
     int total_frames = fps * video_time;
-    float step = 360.0 / (fps / loop_time);
+    float step = 360.0 / (fps * loop_time);
+    float step_eye = 360.0 / (fps * loop_time_camara);
     //vector<Luz*> luciernagas = luces;
     vector<Esferav2*> change_pos;
+    vec3 center(6, 20, 15);
 
+//    auto* change_eye = new Esferav2(center, 5, 36.52, true, 5, 15.94);
+//    auto* change_eye = new Esferav2(center, 5, 36.52, true, 16.61, -73.30);
+    auto* change_eye = new Esferav2(center, step_eye, 36.52, true, 15.94, 85.1);
     for(auto& luciernaga : luciernagas){
-        change_pos.push_back(new Esferav2(luciernaga->cen, step, 0.8, rand() % 6, rand() % 2));
+        change_pos.push_back(new Esferav2(luciernaga->cen, step, 0.8, rand() % 6, rand() % 2, -1));
     }
-#pragma omp parallel for default(none)
+    cout << camara.center << endl;
     for(int i = 0; i < total_frames; i++){
         string filename = "imagen_" + to_string(i) + ".bmp";
         camara.renderizar(objetos, luces, filename);
 
+        camara.eye = change_eye->calculate_next_coordinate();
         for(int j = 0; j < luciernagas.size(); j++){
             luciernagas[j]->cen = change_pos[j]->calculate_next_coordinate();
         }
